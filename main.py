@@ -1,6 +1,7 @@
 from flask import Flask
 from flask import jsonify
-from simulator import Board, Random_Player
+from simulator import Board
+from team40 import Player40
 import copy
 
 app = Flask(__name__)
@@ -80,7 +81,7 @@ def init(i_play_as):
     fl2 = 'o'
     game_board = Board()
     old_move = (-1,-1)
-    bot = Random_Player()
+    bot = Player40()
     if i_play_as == 'o':
         temp_board_status = copy.deepcopy(game_board.board_status)
         temp_block_status = copy.deepcopy(game_board.block_status)
