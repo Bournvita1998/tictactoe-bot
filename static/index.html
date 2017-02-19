@@ -43,10 +43,14 @@
   </style>
 </head>
 <body>
-<div id='gameboard'></div>
+<div id='gameboard'>
+  <button onclick='playAs("X")'>Play as X</button>
+  <button onclick='playAs("O")'>Play as O</button>
+</div>
 </body>
 <script>
 var board = []
+var human_p, bot_p
 for (var i = 0; i < 16; i++) {
   var row = []
   for (var j = 0; j < 16; j++) {
@@ -68,27 +72,38 @@ function draw() {
   $('#gameboard').html(html)
 }
 
-function clicked(i, j) {
-  board[i][j] = 'X'
-  draw()
-  $.get(`/move/${i}/${j}`, function (data) {
-    if (data.move) {
-      var i2 = data.move[0], j2 = data.move[1]
-      board[i2][j2] = 'O'
-      draw()
-      document.getElementById(`${i2},${j2}`).classList.add('lastMove')
-    }
-    if (data.winner) {
-      alert(data.winner + ' WON\n' + data.message)
-    }
-    if (data.valid) {
-      data.valid.map(function (cell) {
-        document.getElementById(`${cell[0]},${cell[1]}`).classList.add('valid')
-      })
-    }
-  })
+function update (data) {
+  if (data.move) {
+    var i2 = data.move[0], j2 = data.move[1]
+    board[i2][j2] = bot_p
+    draw()
+    document.getElementById(`${i2},${j2}`).classList.add('lastMove')
+  }
+  if (data.winner) {
+    alert(data.winner + ' WON\n' + data.message)
+  }
+  if (data.valid) {
+    data.valid.map(function (cell) {
+      document.getElementById(`${cell[0]},${cell[1]}`).classList.add('valid')
+    })
+  }
 }
 
-$.get('/init/x', () => draw())
+function clicked(i, j) {
+  board[i][j] = human_p
+  draw()
+  $.get(`/move/${i}/${j}`, update)
+}
+
+function playAs(human_play_as) {
+  human_p = human_play_as
+  bot_p = human_p == 'O' ? 'X' : 'O'
+  if (human_p == 'X') {
+    $.get(`/init/x`, () => draw())
+  } else {
+    $.get(`/init/o`, update)
+  }
+}
+
 </script>
 </html>

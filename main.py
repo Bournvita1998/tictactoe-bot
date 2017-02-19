@@ -8,23 +8,23 @@ app = Flask(__name__)
 @app.route("/move/<r>/<c>")
 def move(r, c):
     global fl1, fl2, game_board, old_move, bot
-    p1_move = (int(r), int(c))
-    if game_board.update(old_move, p1_move, fl1) == 'UNSUCCESSFUL':
-    	WINNER = 'P2'
+    human_move = (int(r), int(c))
+    if game_board.update(old_move, human_move, fl1) == 'UNSUCCESSFUL':
+        WINNER = 'BOT'
     	MESSAGE = 'INVALID MOVE'
-        return game_over(p1_move, WINNER, MESSAGE)
+        return game_over(human_move, WINNER, MESSAGE)
 
     status = game_board.find_terminal_state()		#find if the game has ended and if yes, find the winner
     if status[1] == 'WON':							#if the game has ended after a player1 move, player 1 would win
-        WINNER = 'P1'
+        WINNER = 'HUMAN'
         MESSAGE = 'WON'
-        return game_over(p1_move, WINNER, MESSAGE)
+        return game_over(human_move, WINNER, MESSAGE)
     elif status[1] == 'DRAW':						#in case of a draw, each player gets points equal to the number of blocks won
         WINNER = 'NONE'
         MESSAGE = 'DRAW'
-        return game_over(p1_move, WINNER, MESSAGE)
+        return game_over(human_move, WINNER, MESSAGE)
 
-    old_move = p1_move
+    old_move = human_move
     game_board.print_board()
 
     #do the same thing for player 2
@@ -32,31 +32,31 @@ def move(r, c):
     temp_block_status = copy.deepcopy(game_board.block_status)
 
     try:
-        p2_move = bot.move(game_board, old_move, fl2)
+        bot_move = bot.move(game_board, old_move, fl2)
     except Exception:
-        WINNER = 'P1'
+        WINNER = 'HUMAN'
         MESSAGE = 'INVALID MOVE'
-        return game_over(p2_move, WINNER, MESSAGE)
+        return game_over((-1, -1), WINNER, MESSAGE)
     if (game_board.block_status != temp_block_status) or (game_board.board_status != temp_board_status):
-        WINNER = 'P1'
+        WINNER = 'HUMAN'
         MESSAGE = 'MODIFIED THE BOARD'
-        return game_over(p2_move, WINNER, MESSAGE)
-    if game_board.update(old_move, p2_move, fl2) == 'UNSUCCESSFUL':
-        WINNER = 'P1'
+        return game_over(bot_move, WINNER, MESSAGE)
+    if game_board.update(old_move, bot_move, fl2) == 'UNSUCCESSFUL':
+        WINNER = 'HUMAN'
         MESSAGE = 'INVALID MOVE'
-        return game_over(p2_move, WINNER, MESSAGE)
+        return game_over(bot_move, WINNER, MESSAGE)
 
     status = game_board.find_terminal_state()	#find if the game has ended and if yes, find the winner
     if status[1] == 'WON':						#if the game has ended after a player move, player 2 would win
-        WINNER = 'P2'
+        WINNER = 'BOT'
         MESSAGE = 'WON'
-        return game_over(p2_move, WINNER, MESSAGE)
+        return game_over(bot_move, WINNER, MESSAGE)
     elif status[1] == 'DRAW':
         WINNER = 'NONE'
         MESSAGE = 'DRAW'
-        return game_over(p2_move, WINNER, MESSAGE)
+        return game_over(bot_move, WINNER, MESSAGE)
 
-    old_move = p2_move
+    old_move = bot_move
     game_board.print_board()
     print game_board.find_valid_move_cells(old_move)
     return jsonify({'move': sermove(old_move), 'valid': sermoves(game_board.find_valid_move_cells(old_move))})
@@ -81,6 +81,29 @@ def init(i_play_as):
     game_board = Board()
     old_move = (-1,-1)
     bot = Random_Player()
+    if i_play_as == 'o':
+        temp_board_status = copy.deepcopy(game_board.board_status)
+        temp_block_status = copy.deepcopy(game_board.block_status)
+
+        try:
+            bot_move = bot.move(game_board, old_move, fl2)
+        except Exception:
+            WINNER = 'HUMAN'
+            MESSAGE = 'INVALID MOVE'
+            return game_over((-1, -1), WINNER, MESSAGE)
+        if (game_board.block_status != temp_block_status) or (game_board.board_status != temp_board_status):
+            WINNER = 'HUMAN'
+            MESSAGE = 'MODIFIED THE BOARD'
+            return game_over(bot_move, WINNER, MESSAGE)
+        if game_board.update(old_move, bot_move, fl2) == 'UNSUCCESSFUL':
+            WINNER = 'HUMAN'
+            MESSAGE = 'INVALID MOVE'
+            return game_over(bot_move, WINNER, MESSAGE)
+
+        old_move = bot_move
+        game_board.print_board()
+
+        return jsonify({'move': sermove(old_move), 'valid': sermoves(game_board.find_valid_move_cells(old_move))})
     return "yay"
 
 @app.route('/')
