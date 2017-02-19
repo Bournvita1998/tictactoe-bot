@@ -1,0 +1,94 @@
+<html>
+<head>
+  <script
+			  src="https://code.jquery.com/jquery-3.1.1.js"
+			  integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA="
+			  crossorigin="anonymous"></script>
+  <style>
+  #gameboard > span {
+    display: inline-block;
+    height: 2em;
+    width: 2em;
+    text-align: center;
+    border: 1px solid black;
+    padding: 0.25em;
+    line-height: 2em;
+  }
+
+  #gameboard > span.valid {
+    background-color: #5F5
+  }
+
+  #gameboard > span.X {
+    background-color: #F55
+  }
+
+  #gameboard > span.O {
+    background-color: #55F
+  }
+
+  #gameboard > span.lastMove {
+    box-shadow: inset 0 0 0 0.25em #333;
+  }
+
+  .space {
+    display: inline-block;
+    width: 0.2em;
+  }
+
+  .vspace {
+    height: 0.2em;
+    border: 0;
+  }
+  </style>
+</head>
+<body>
+<div id='gameboard'></div>
+</body>
+<script>
+var board = []
+for (var i = 0; i < 16; i++) {
+  var row = []
+  for (var j = 0; j < 16; j++) {
+    row.push('-')
+  }
+  board.push(row)
+}
+
+function draw() {
+  var html = ''
+  for (var i = 0; i < 16; i++) {
+    if (i % 4 == 0) html += `<div class='vspace'></div>`
+    for (var j = 0; j < 16; j++) {
+      if (j % 4 == 0) html += `<div class='space'></div>`
+      html += `<span id='${i},${j}' onclick='clicked(${i},${j})' class='${board[i][j]}'>${board[i][j]}</span>`
+    }
+    html += '<br/>'
+  }
+  $('#gameboard').html(html)
+}
+
+function clicked(i, j) {
+  board[i][j] = 'X'
+  draw()
+  $.get(`/move/${i}/${j}`, function (data) {
+    if (data.move) {
+      var i2 = data.move[0], j2 = data.move[1]
+      board[i2][j2] = 'O'
+      draw()
+      document.getElementById(`${i2},${j2}`).classList.add('lastMove')
+    }
+    if (data.winner) {
+      alert(data.winner + ' WON\n' + data.message)
+    }
+    if (data.valid) {
+      data.valid.map(function (cell) {
+        document.getElementById(`${cell[0]},${cell[1]}`).classList.add('valid')
+      })
+    }
+  })
+}
+
+$.get('/init/x', () => draw())
+</script>
+</html>
