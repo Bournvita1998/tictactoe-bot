@@ -3,6 +3,7 @@ from flask import jsonify
 from simulator import Board
 from team40 import Player40
 import copy
+import traceback
 
 app = Flask(__name__)
 
@@ -35,6 +36,7 @@ def move(r, c):
     try:
         bot_move = bot.move(game_board, old_move, fl2)
     except Exception:
+        print traceback.format_exc()
         WINNER = 'HUMAN'
         MESSAGE = 'INVALID MOVE'
         return game_over((-1, -1), WINNER, MESSAGE)
@@ -89,6 +91,7 @@ def init(i_play_as):
         try:
             bot_move = bot.move(game_board, old_move, fl2)
         except Exception:
+            print traceback.format_exc()
             WINNER = 'HUMAN'
             MESSAGE = 'INVALID MOVE'
             return game_over((-1, -1), WINNER, MESSAGE)
