@@ -1,3 +1,5 @@
+#!/usr/bin/env python2
+
 from flask import Flask
 from flask import jsonify
 from simulator import Board
