@@ -16,17 +16,17 @@ def move(r, c):
     if game_board.update(old_move, human_move, fl1) == 'UNSUCCESSFUL':
         WINNER = 'BOT'
     	MESSAGE = 'INVALID MOVE'
-        return game_over(human_move, WINNER, MESSAGE)
+        return game_over((-1, -1), WINNER, MESSAGE)
 
     status = game_board.find_terminal_state()		#find if the game has ended and if yes, find the winner
     if status[1] == 'WON':							#if the game has ended after a player1 move, player 1 would win
         WINNER = 'HUMAN'
         MESSAGE = 'WON'
-        return game_over(human_move, WINNER, MESSAGE)
+        return game_over((-1, -1), WINNER, MESSAGE)
     elif status[1] == 'DRAW':						#in case of a draw, each player gets points equal to the number of blocks won
         WINNER = 'NONE'
         MESSAGE = 'DRAW'
-        return game_over(human_move, WINNER, MESSAGE)
+        return game_over((-1, -1), WINNER, MESSAGE)
 
     old_move = human_move
     game_board.print_board()

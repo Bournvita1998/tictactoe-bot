@@ -73,7 +73,7 @@ function draw() {
 }
 
 function update (data) {
-  if (data.move) {
+  if (data.move && data.move[0] > -1) {
     var i2 = data.move[0], j2 = data.move[1]
     board[i2][j2] = bot_p
     draw()
