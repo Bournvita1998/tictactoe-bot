@@ -3,6 +3,7 @@ import random
 import signal
 import time
 import copy
+import traceback
 from team40 import Player40
 
 class TimedOutExc(Exception):
@@ -188,18 +189,19 @@ def gameplay(obj1, obj2):				#game simulator
 		try:									#try to get player 1's move
 			p1_move = obj1.move(game_board, old_move, fl1)
 		except TimedOutExc:					#timeout error
-#			print e
+			traceback.print_exc()
 			WINNER = 'P2'
 			MESSAGE = 'TIME OUT'
 			pts2 = 16
 			break
 		except Exception as e:
+			traceback.print_exc()
 			WINNER = 'P2'
 			MESSAGE = 'INVALID MOVE'
 			pts2 = 16
 			break
 		signal.alarm(0)
-
+		print p1_move
 		#check if board is not modified and move returned is valid
 		if (game_board.block_status != temp_block_status) or (game_board.board_status != temp_board_status):
 			WINNER = 'P2'
@@ -240,11 +242,13 @@ def gameplay(obj1, obj2):				#game simulator
 			pts1 = 16
 			break
 		except Exception as e:
+			traceback.print_exc()
 			WINNER = 'P1'
 			MESSAGE = 'INVALID MOVE'
 			pts1 = 16
 			break
 		signal.alarm(0)
+		print p2_move
 		if (game_board.block_status != temp_block_status) or (game_board.board_status != temp_board_status):
 			WINNER = 'P1'
 			MESSAGE = 'MODIFIED THE BOARD'
