@@ -1,4 +1,5 @@
 import copy
+import sys
 
 class Player40:
 
@@ -31,7 +32,10 @@ class Player40:
 
 	def ab_minimax(self, board, old_move, depth, alpha, beta, max_player):
 		if depth == 0 or board.find_terminal_state() != ('CONTINUE', '-'):
+			# sys.stdout.write(str(old_move) + ' ')
 			return self.heuristic(board)
+
+		# print str(self.default_depth - depth) + '\t' + str(old_move)
 
 		if max_player:
 			v = -1000000000
@@ -58,4 +62,5 @@ class Player40:
 			return v
 
 	def heuristic(self, board):
-		return 1
+		# heur1
+		return board.block_status.count(self.player_map[True]) - board.block_status.count(self.player_map[False])
