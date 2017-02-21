@@ -63,7 +63,7 @@ def move(r, c):
 
     old_move = bot_move
     game_board.print_board()
-    print game_board.find_valid_move_cells(old_move)
+    # print game_board.find_valid_move_cells(old_move)
     return jsonify({'move': sermove(old_move), 'valid': sermoves(game_board.find_valid_move_cells(old_move))})
 
 def game_over(move, WINNER, MESSAGE):

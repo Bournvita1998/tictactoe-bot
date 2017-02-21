@@ -3,6 +3,7 @@ import random
 import signal
 import time
 import copy
+from team40 import Player40
 
 class TimedOutExc(Exception):
 	pass
@@ -300,6 +301,8 @@ if __name__ == '__main__':
 		print '<option> can be 1 => Random player vs. Random player'
 		print '                2 => Human vs. Random Player'
 		print '                3 => Human vs. Human'
+		print '                4 => Player40 vs Random player'
+		print '                5 => Random player vs. Player40'
 		sys.exit(1)
 
 	obj1 = ''
@@ -315,6 +318,12 @@ if __name__ == '__main__':
 	elif option == '3':
 		obj1 = Manual_Player()
 		obj2 = Manual_Player()
+	elif option == '4':
+		obj1 = Player40()
+		obj2 = Random_Player()
+	elif option == '5':
+		obj1 = Random_Player()
+		obj2 = Player40()
 	else:
 		print 'Invalid option'
 		sys.exit(1)
