@@ -62,5 +62,12 @@ class Player40:
 			return v
 
 	def heuristic(self, board):
+		tstate = board.find_terminal_state()
+		if tstate[1] == 'WON':
+			if tstate[0] == self.player_map[True]:
+				return self.MAX
+			else:
+				return -self.MAX
+
 		# heur1
 		return board.block_status.count(self.player_map[True]) - board.block_status.count(self.player_map[False])
