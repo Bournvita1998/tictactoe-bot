@@ -3,10 +3,11 @@ import sys
 
 class Player40:
 
-	def __init__(self):
+	def __init__(self, heurn = 2):
 		self.MAX = 1000000000
 		self.default_depth = 3
 		self.player_map = {}
+		self.heurn = heurn
 
 	def move(self, board, old_move, flag):
 		if flag == 'x':
@@ -74,13 +75,35 @@ class Player40:
 			else:
 				return -self.MAX
 
-		# heur1
-		heur1 = 0
-		for i in range(4):
-			for j in range(4):
-				if board.block_status[i][j] == self.player_map[True]:
-					heur1 += 1
-				elif board.block_status[i][j] == self.player_map[False]:
-					heur1 -= 1
+		if self.heurn == 1: # heur1
+			heur1 = 0
+			for i in range(4):
+				for j in range(4):
+					if board.block_status[i][j] == self.player_map[True]:
+						heur1 += 1
+					elif board.block_status[i][j] == self.player_map[False]:
+						heur1 -= 1
 
-		return heur1
+			return heur1
+		elif self.heurn == 2: # heur2
+			score = 0
+			for i in range(4):
+				for j in range(4):
+					temp = 0
+					if (i == 0 or i == 3) != (j == 0 or j == 3): # edge block
+						temp = 5
+					else: # corner or one of the centre squares
+						temp = 15
+					if board.block_status[i][j] == self.player_map[True]:
+						score += temp
+					elif board.block_status[i][j] == self.player_map[False]:
+						score -= temp
+					if board.block_status[i][j] == '-':
+						for bi in range(4):
+							for bj in range(4):
+								if (bi == 0 or bi == 3) == (bj == 0 or bj == 3): # centre or corner squares
+									if board.board_status[4*i + bi][4*j + bj] == self.player_map[True]:
+										score += 3
+									elif board.board_status[4*i + bi][4*j + bj] == self.player_map[False]:
+										score -= 3
+			return score
