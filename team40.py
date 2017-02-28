@@ -108,4 +108,12 @@ class Player40:
 				return -self.MAX
 
 		# heur1
-		return board.block_status.count(self.player_map[True]) - board.block_status.count(self.player_map[False])
+		heur1 = 0
+		for i in range(4):
+			for j in range(4):
+				if board.block_status[i][j] == self.player_map[True]:
+					heur1 += 1
+				elif board.block_status[i][j] == self.player_map[False]:
+					heur1 -= 1
+
+		return heur1
