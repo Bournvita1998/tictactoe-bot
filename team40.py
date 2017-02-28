@@ -44,7 +44,8 @@ class Player40:
 				# temp_board = copy.copy(board)
 				board.update(old_move, new_move, self.player_map[max_player])
 				v = max(v, self.ab_minimax(board, new_move, depth - 1, alpha, beta, False))
-				self.undo_move(board, new_move, max_player)
+				board.board_status[new_move[0]][new_move[1]] = '-'
+				board.block_status[new_move[0]/4][new_move[1]/4] = '-'
 				alpha = max(alpha, v)
 				if beta <= alpha:
 					break
@@ -57,46 +58,12 @@ class Player40:
 				# temp_board = copy.copy(board)
 				board.update(old_move, new_move, self.player_map[max_player])
 				v = min(v, self.ab_minimax(board, new_move, depth - 1, alpha, beta, True))
-				self.undo_move(board, new_move, max_player)
+				board.board_status[new_move[0]][new_move[1]] = '-'
+				board.block_status[new_move[0]/4][new_move[1]/4] = '-'
 				beta = min(beta, v)
 				if beta <= alpha:
 					break
 			return v
-
-	def undo_move(self, board, old_move, max_player):
-		board.board_status[old_move[0]][old_move[1]] = '-'
-
-		# checking if a block has been won or drawn or not after the current move
-		x = old_move[0]/4
-		y = old_move[1]/4
-		board.block_status[x][y] = '-'
-		bs = board.board_status
-
-		for i in range(4):
-			# checking for horizontal pattern(i'th row)
-			if (bs[4*x+i][4*y] == bs[4*x+i][4*y+1] == bs[4*x+i][4*y+2] == bs[4*x+i][4*y+3]) and bs[4*x+i][4*y] != '-':
-				board.block_status[x][y] = bs[4*x+i][4*y]
-				return
-			# checking for vertical pattern(i'th column)
-			if (bs[4*x][4*y+i] == bs[4*x+1][4*y+i] == bs[4*x+2][4*y+i] == bs[4*x+3][4*y+i]) and bs[4*x][4*y+i] != '-':
-				board.block_status[x][y] = bs[4*x][4*y+i]
-				return
-
-		# checking for diagnol pattern
-		if (bs[4*x][4*y] == bs[4*x+1][4*y+1] == bs[4*x+2][4*y+2] == bs[4*x+3][4*y+3]) and bs[4*x][4*y] != '-':
-			board.block_status[x][y] = bs[4*x][4*y]
-			return
-		if (bs[4*x+3][4*y] == bs[4*x+2][4*y+1] == bs[4*x+1][4*y+2] == bs[4*x][4*y+3]) and bs[4*x+3][4*y] != '-':
-			board.block_status[x][y] = bs[4*x+3][4*y]
-			return
-
-		# checking if a block has any more cells left or has it been drawn
-		for i in range(4):
-			for j in range(4):
-				if bs[4*x+i][4*y+j] =='-':
-					return
-		board.block_status[x][y] = 'd'
-		return
 
 
 	def heuristic(self, board):
