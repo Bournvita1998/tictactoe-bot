@@ -274,10 +274,10 @@ class Player40:
 
 
 		return [
-			blocks_cc_won, blocks_cc_lost, blocks_edge_won, blocks_edge_lost,
+			blocks_cc_won/9.0, blocks_cc_lost/9.0, blocks_edge_won/9.0, blocks_edge_lost/9.0,
 
-			bl_won, bl_lost,
-			freedom, freemove,
+			bl_won/72.0, bl_lost/72.0,
+			freedom/10.0, freemove,
 
-			cells_cc_won, cells_cc_lost, cells_edge_won, cells_edge_lost,
+			cells_cc_won/144.0, cells_cc_lost/144.0, cells_edge_won/144.0, cells_edge_lost/144.0,
 		]
