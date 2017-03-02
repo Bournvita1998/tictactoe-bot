@@ -5,6 +5,7 @@ import time
 import copy
 import traceback
 from team40 import Player40
+# from swag39 import Player39a
 
 class TimedOutExc(Exception):
 	pass
@@ -327,6 +328,7 @@ if __name__ == '__main__':
 		obj1 = Player40(int(sys.argv[2]))
 		obj2 = Random_Player()
 	elif option == '5':
+		# obj1 = Player39a()
 		obj1 = Random_Player()
 		obj2 = Player40(int(sys.argv[2]))
 	elif option == '6':
@@ -339,3 +341,4 @@ if __name__ == '__main__':
 	x = gameplay(obj1, obj2)
 	print "Player 1 points:", x[0]
 	print "Player 2 points:", x[1]
+	print obj2.maxTime
