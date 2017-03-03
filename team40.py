@@ -142,6 +142,8 @@ class Player40:
 		bl_lost = 0
 		freedom = 0
 		freemove = 0 # -1 if opp gets freemove, 0 or 1 if we get freemove
+		cl_won = cl_lost = 0
+		cfreedom = 0
 
 		diag1_stat = 2
 		diag1_count = 0
@@ -155,78 +157,78 @@ class Player40:
 			col_count = 0
 
 			# Diag1
-			if board.board_status[i][i] == self.player_map[True]:
+			if board.block_status[i][i] == self.player_map[True]:
 				if diag1_stat == 2:
 					diag1_stat = 1
 					diag1_count += 1
 				else:
 					diag1_stat = 0
 					diag1_count = 0
-			elif board.board_status[i][i] == self.player_map[False]:
+			elif board.block_status[i][i] == self.player_map[False]:
 				if diag1_stat == 2:
 					diag1_stat = -1
 					diag1_count += 1
 				else:
 					diag1_stat = 0
 					diag1_count = 0
-			elif board.board_status[i][i] == 'd':
+			elif board.block_status[i][i] == 'd':
 				diag1_stat = 0
 
 			# Diag2
-			if board.board_status[i][3-i] == self.player_map[True]:
+			if board.block_status[i][3-i] == self.player_map[True]:
 				if diag2_stat == 2:
 					diag2_stat = 1
 					diag2_count += 1
 				else:
 					diag2_stat = 0
 					diag2_count = 0
-			elif board.board_status[i][3-i] == self.player_map[False]:
+			elif board.block_status[i][3-i] == self.player_map[False]:
 				if diag2_stat == 2:
 					diag2_stat = -1
 					diag2_count += 1
 				else:
 					diag2_stat = 0
 					diag2_count = 0
-			elif board.board_status[i][3-i] == 'd':
+			elif board.block_status[i][3-i] == 'd':
 				diag2_stat = 0
 
 			for j in range(4):
 
 				# Row statistics
-				if board.board_status[i][j] == self.player_map[True]:
+				if board.block_status[i][j] == self.player_map[True]:
 					if row_stat == 2:
 						row_stat = 1
 						row_count += 1
 					else:
 						row_stat = 0
 						row_count = 0
-				elif board.board_status[i][j] == self.player_map[False]:
+				elif board.block_status[i][j] == self.player_map[False]:
 					if row_stat == 2:
 						row_stat = -1
 						row_count += 1
 					else:
 						row_stat = 0
 						row_count = 0
-				elif board.board_status[i][j] == 'd':
+				elif board.block_status[i][j] == 'd':
 					row_stat = 0
 
 				# Col statistics
-				if board.board_status[j][i] == self.player_map[True]:
+				if board.block_status[j][i] == self.player_map[True]:
 					if col_stat == 2:
 						col_stat = 1
 						col_count += 1
 					else:
 						col_stat = 0
 						col_count = 0
-				elif board.board_status[j][i] == self.player_map[False]:
+				elif board.block_status[j][i] == self.player_map[False]:
 					if col_stat == 2:
 						col_stat = -1
 						col_count += 1
 					else:
 						col_stat = 0
 						col_count = 0
-				elif board.board_status[j][i] == 'd':
-					row_stat = 0
+				elif board.block_status[j][i] == 'd':
+					col_stat = 0
 
 				# Block statistics
 				if (i == 0 or i == 3) != (j == 0 or j == 3): # edge block
@@ -242,8 +244,81 @@ class Player40:
 
 				# Cell statistics for blocks which have not been won or drawn
 				if board.block_status[i][j] == '-':
+					cdiag1_stat = 2
+					cdiag1_count = 0
+					cdiag2_stat = 2
+					cdiag2_count = 0
 					for bi in range(4):
+						crow_stat = 2  # 1 - we are in adv in that row, 0 - drawn row, -1 - opp in adv
+						ccol_stat = 2  # 2 - unitialized
+						crow_count = 0 # count of number of cells row_stat has in that row
+						ccol_count = 0
+
+						# Diag1
+						if board.board_status[i][i] == self.player_map[True]:
+							if cdiag1_stat == 2:
+								cdiag1_stat = 1
+								cdiag1_count += 1
+							else:
+								cdiag1_stat = 0
+								cdiag1_count = 0
+						elif board.board_status[i][i] == self.player_map[False]:
+							if cdiag1_stat == 2:
+								cdiag1_stat = -1
+								cdiag1_count += 1
+							else:
+								cdiag1_stat = 0
+								cdiag1_count = 0
+
+						# Diag2
+						if board.board_status[i][3-i] == self.player_map[True]:
+							if cdiag2_stat == 2:
+								cdiag2_stat = 1
+								cdiag2_count += 1
+							else:
+								cdiag2_stat = 0
+								cdiag2_count = 0
+						elif board.board_status[i][3-i] == self.player_map[False]:
+							if cdiag2_stat == 2:
+								cdiag2_stat = -1
+								cdiag2_count += 1
+							else:
+								cdiag2_stat = 0
+								cdiag2_count = 0
+
 						for bj in range(4):
+							# Row statistics
+							if board.board_status[i][j] == self.player_map[True]:
+								if crow_stat == 2:
+									crow_stat = 1
+									crow_count += 1
+								else:
+									crow_stat = 0
+									crow_count = 0
+							elif board.board_status[i][j] == self.player_map[False]:
+								if crow_stat == 2:
+									crow_stat = -1
+									crow_count += 1
+								else:
+									crow_stat = 0
+									crow_count = 0
+
+							# Col statistics
+							if board.board_status[j][i] == self.player_map[True]:
+								if ccol_stat == 2:
+									ccol_stat = 1
+									ccol_count += 1
+								else:
+									ccol_stat = 0
+									ccol_count = 0
+							elif board.board_status[j][i] == self.player_map[False]:
+								if ccol_stat == 2:
+									ccol_stat = -1
+									ccol_count += 1
+								else:
+									ccol_stat = 0
+									ccol_count = 0
+
 							if (bi == 0 or bi == 3) == (bj != 0 or bj == 3): # centre or corner squares
 								if board.board_status[4*i + bi][4*j + bj] == self.player_map[True]:
 									cells_edge_won += 1
@@ -254,6 +329,23 @@ class Player40:
 									cells_cc_won += 1
 								elif board.board_status[4*i + bi][4*j + bj] == self.player_map[False]:
 									cells_cc_lost += 1
+
+						if crow_stat == 1:
+							cl_won += crow_count * crow_count
+							cfreedom += 1
+						elif crow_stat == -1:
+							cl_lost += crow_count * crow_count
+						elif crow_stat == 2:
+							cfreedom += 1
+
+						if ccol_stat == 1:
+							cl_won += ccol_count * ccol_count
+							cfreedom += 1
+						elif ccol_stat == -1:
+							cl_lost += ccol_count * ccol_count
+						elif ccol_stat == 2:
+							cfreedom += 1
+
 
 			if row_stat == 1:
 				bl_won += row_count * row_count
@@ -298,4 +390,6 @@ class Player40:
 			freedom/10.0, freemove,
 
 			cells_cc_won/144.0, cells_cc_lost/144.0, cells_edge_won/144.0, cells_edge_lost/144.0,
+			cl_won/1152.0, cl_lost/1152.0,
+			cfreedom/160.0,
 		]
