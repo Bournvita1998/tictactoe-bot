@@ -9,6 +9,7 @@ class Player40:
 		self.player_map = {}
 		self.heurn = heurn
 		self.maxTime = 0
+		self.timeLimit = 10
 		self.feature_weights = [
 			0, 0, 0, 0,
 
@@ -30,11 +31,14 @@ class Player40:
 			self.player_map[False] = 'x'
 		depth = 2
 		ret = 0
-		while time() - self.startTime < 14:
+		self.stopTime = False
+		while time() - self.startTime < self.timeLimit:
 			x = self.moveD(board, old_move, flag, depth)
-			if x != -1:
+			if not self.stopTime:
 				ret = x
 			depth += 1
+		print 'Depth ' + str(depth)
+		self.stopTime = False
 		return ret
 
 	def moveD(self, board, old_move, flag, depth):
@@ -57,8 +61,11 @@ class Player40:
 
 
 	def ab_minimax(self, board, old_move, depth, alpha, beta, max_player):
+		if time() - self.startTime > self.timeLimit or self.stopTime:
+			self.stopTime = True
+			return -1
 
-		if depth == 0 or board.find_terminal_state() != ('CONTINUE', '-') or time() - self.startTime > 14:
+		if depth == 0 or board.find_terminal_state() != ('CONTINUE', '-'):
 			# sys.stdout.write(str(old_move) + ' ')
 			return self.heuristic(board, old_move, not max_player)
 
@@ -73,6 +80,8 @@ class Player40:
 				v = max(v, self.ab_minimax(board, new_move, depth - 1, alpha, beta, False))
 				board.board_status[new_move[0]][new_move[1]] = '-'
 				board.block_status[new_move[0]/4][new_move[1]/4] = '-'
+				if self.stopTime:
+					return -1
 				alpha = max(alpha, v)
 				if beta <= alpha:
 					break
@@ -87,6 +96,8 @@ class Player40:
 				v = min(v, self.ab_minimax(board, new_move, depth - 1, alpha, beta, True))
 				board.board_status[new_move[0]][new_move[1]] = '-'
 				board.block_status[new_move[0]/4][new_move[1]/4] = '-'
+				if self.stopTime:
+					return -1
 				beta = min(beta, v)
 				if beta <= alpha:
 					break

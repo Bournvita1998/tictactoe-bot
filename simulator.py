@@ -175,7 +175,7 @@ def gameplay(obj1, obj2):				#game simulator
 	old_move = (-1,-1)
 	WINNER = ''
 	MESSAGE = ''
-	TIME = 15
+	TIME = 11
 	pts1 = 0
 	pts2 = 0
 
