@@ -227,8 +227,10 @@ def gameplay(obj1, obj2):				#game simulator
 			MESSAGE = 'DRAW'
 			break
 
+		print 'it was x'
 		old_move = p1_move
 		game_board.print_board()
+		print pour1.extract_features(game_board, old_move, True)
 
 		#do the same thing for player 2
 		temp_board_status = copy.deepcopy(game_board.board_status)
@@ -272,8 +274,10 @@ def gameplay(obj1, obj2):				#game simulator
 			WINNER = 'NONE'
 			MESSAGE = 'DRAW'
 			break
+		print 'it was o'
 		game_board.print_board()
 		old_move = p2_move
+		print pour2.extract_features(game_board, old_move, True)
 
 	game_board.print_board()
 
@@ -313,6 +317,10 @@ if __name__ == '__main__':
 
 	obj1 = ''
 	obj2 = ''
+	pour1 = Player40(3)
+	pour1.player_map = {True: 'x', False: 'o'}
+	pour2 = Player40(3)
+	pour2.player_map = {True: 'o', False: 'x'}
 	option = sys.argv[1]
 	if option == '1':
 		obj1 = Random_Player()

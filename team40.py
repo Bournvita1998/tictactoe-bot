@@ -44,7 +44,7 @@ class Player40:
 	def ab_minimax(self, board, old_move, depth, alpha, beta, max_player):
 		if depth == 0 or board.find_terminal_state() != ('CONTINUE', '-'):
 			# sys.stdout.write(str(old_move) + ' ')
-			return self.heuristic(board, old_move)
+			return self.heuristic(board, old_move, not max_player)
 
 		# print str(self.default_depth - depth) + '\t' + str(old_move)
 
@@ -77,7 +77,7 @@ class Player40:
 			return v
 
 
-	def heuristic(self, board, old_move):
+	def heuristic(self, board, old_move, was_our_move):
 		t1 = time()
 		tstate = board.find_terminal_state()
 		if tstate[1] == 'WON':
@@ -125,8 +125,7 @@ class Player40:
 			return score
 
 		elif self.heurn == 3:
-			features = self.extract_features(board, old_move)
-
+			features = self.extract_features(board, old_move, was_our_move)
 			total = 0
 			for i in range(len(self.feature_weights)):
 				total += self.feature_weights[i] * features[i]
@@ -134,12 +133,7 @@ class Player40:
 			return total
 
 
-	def extract_features(self, board, old_move):
-		was_our_move = True
-		if board.board_status[old_move[0]][old_move[1]] == self.player_map[True]:
-			was_our_move = True
-		else:
-			was_our_move = False
+	def extract_features(self, board, old_move, was_our_move):
 
 		blocks_cc_won = blocks_cc_lost = 0.0
 		blocks_edge_won = blocks_edge_lost = 0.0
@@ -352,6 +346,22 @@ class Player40:
 							cl_lost += ccol_count * ccol_count
 						elif ccol_stat == 2:
 							cfreedom += 1
+
+					if cdiag1_stat == 1:
+						cl_won += cdiag1_count * cdiag1_count
+						cfreedom += 1
+					elif cdiag1_stat == -1:
+						cl_lost += cdiag1_count * cdiag1_count
+					elif cdiag1_stat == 2:
+						cfreedom += 1
+
+					if cdiag2_stat == 1:
+						cl_won += cdiag2_count * cdiag2_count
+						cfreedom += 1
+					elif cdiag2_stat == -1:
+						cl_lost += cdiag2_count * cdiag2_count
+					elif cdiag2_stat == 2:
+						cfreedom += 1
 
 
 			if row_stat == 1:
