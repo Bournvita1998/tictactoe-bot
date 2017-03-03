@@ -255,15 +255,17 @@ class Player40:
 						crow_count = 0 # count of number of cells row_stat has in that row
 						ccol_count = 0
 
+						ci = 4*i + bi
+
 						# Diag1
-						if board.board_status[i][i] == self.player_map[True]:
+						if board.board_status[ci][ci] == self.player_map[True]:
 							if cdiag1_stat == 2:
 								cdiag1_stat = 1
 								cdiag1_count += 1
 							else:
 								cdiag1_stat = 0
 								cdiag1_count = 0
-						elif board.board_status[i][i] == self.player_map[False]:
+						elif board.board_status[ci][ci] == self.player_map[False]:
 							if cdiag1_stat == 2:
 								cdiag1_stat = -1
 								cdiag1_count += 1
@@ -272,14 +274,14 @@ class Player40:
 								cdiag1_count = 0
 
 						# Diag2
-						if board.board_status[i][3-i] == self.player_map[True]:
+						if board.board_status[ci][3-ci] == self.player_map[True]:
 							if cdiag2_stat == 2:
 								cdiag2_stat = 1
 								cdiag2_count += 1
 							else:
 								cdiag2_stat = 0
 								cdiag2_count = 0
-						elif board.board_status[i][3-i] == self.player_map[False]:
+						elif board.board_status[ci][3-ci] == self.player_map[False]:
 							if cdiag2_stat == 2:
 								cdiag2_stat = -1
 								cdiag2_count += 1
@@ -288,15 +290,16 @@ class Player40:
 								cdiag2_count = 0
 
 						for bj in range(4):
+							cj = 4*j + bj
 							# Row statistics
-							if board.board_status[i][j] == self.player_map[True]:
+							if board.board_status[ci][cj] == self.player_map[True]:
 								if crow_stat == 2:
 									crow_stat = 1
 									crow_count += 1
 								else:
 									crow_stat = 0
 									crow_count = 0
-							elif board.board_status[i][j] == self.player_map[False]:
+							elif board.board_status[ci][cj] == self.player_map[False]:
 								if crow_stat == 2:
 									crow_stat = -1
 									crow_count += 1
@@ -305,14 +308,14 @@ class Player40:
 									crow_count = 0
 
 							# Col statistics
-							if board.board_status[j][i] == self.player_map[True]:
+							if board.board_status[cj][ci] == self.player_map[True]:
 								if ccol_stat == 2:
 									ccol_stat = 1
 									ccol_count += 1
 								else:
 									ccol_stat = 0
 									ccol_count = 0
-							elif board.board_status[j][i] == self.player_map[False]:
+							elif board.board_status[cj][ci] == self.player_map[False]:
 								if ccol_stat == 2:
 									ccol_stat = -1
 									ccol_count += 1
@@ -321,14 +324,14 @@ class Player40:
 									ccol_count = 0
 
 							if (bi == 0 or bi == 3) == (bj != 0 or bj == 3): # centre or corner squares
-								if board.board_status[4*i + bi][4*j + bj] == self.player_map[True]:
+								if board.board_status[ci][cj] == self.player_map[True]:
 									cells_edge_won += 1
-								elif board.board_status[4*i + bi][4*j + bj] == self.player_map[False]:
+								elif board.board_status[ci][cj] == self.player_map[False]:
 									cells_edge_lost += 1
 							else:
-								if board.board_status[4*i + bi][4*j + bj] == self.player_map[True]:
+								if board.board_status[ci][cj] == self.player_map[True]:
 									cells_cc_won += 1
-								elif board.board_status[4*i + bi][4*j + bj] == self.player_map[False]:
+								elif board.board_status[ci][cj] == self.player_map[False]:
 									cells_cc_lost += 1
 
 						if crow_stat == 1:
