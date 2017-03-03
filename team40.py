@@ -10,19 +10,27 @@ class Player40:
 		self.heurn = heurn
 		self.maxTime = 0
 		self.timeLimit = 13
+		# [
+		# 	freemove,
+		# 	blocks_cc_won, blocks_cc_lost, blocks_edge_won, blocks_edge_lost,
+		# 	bl_won, bl_lost,
+		# 	bdiag_won, bdiag_lost,
+		#
+		# 	cells_cc_won, cells_cc_lost, cells_edge_won, cells_edge_lost,
+		# 	cl_won, cl_lost,
+		# 	cdiag_won, cdiag_lost,
+		# 	# freedom/10.0,
+		# 	# cfreedom/160.0,
+		# ]
 		self.feature_weights = [
-			# 0, 0, 0, 0,
-
+			1000,
+			3000, -3000, 2000, -2000,
 			100, -100,
-			# 0,
-			15,
+			115, -115,
 
-			# 0, 0, 0, 0,
-			100, -110,
-			# 0,
-
-			20, -20,
-			2, -2,
+			2, -2, 1, -1,
+			1, -1,
+			1.15, -1.15,
 		]
 		self.blwts = [0, 1, 10, 100, 500]
 		self.clwts = [0, 1, 10, 100, 500]
@@ -439,17 +447,14 @@ class Player40:
 
 
 		return [
-			blocks_cc_won/9.0, blocks_cc_lost/9.0, blocks_edge_won/9.0, blocks_edge_lost/9.0,
-
-			bl_won, bl_lost,
-			# freedom/10.0,
 			freemove,
-
-			cells_cc_won/144.0, cells_cc_lost/144.0, cells_edge_won/144.0, cells_edge_lost/144.0,
-			cl_won, cl_lost,
-
-			# cfreedom/160.0,
-
+			blocks_cc_won, blocks_cc_lost, blocks_edge_won, blocks_edge_lost,
+			bl_won, bl_lost,
 			bdiag_won, bdiag_lost,
+
+			cells_cc_won, cells_cc_lost, cells_edge_won, cells_edge_lost,
+			cl_won, cl_lost,
 			cdiag_won, cdiag_lost,
+			# freedom/10.0,
+			# cfreedom/160.0,
 		]

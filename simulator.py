@@ -8,24 +8,12 @@ from team40 import Player40
 from vidit import vidit
 # from swag39 import Player39a
 
-feature_normals = [
-	# 9, 9, 9, 9,
-	72.0, 72.0,
-	# 18,
-	1.0,
-	# 144, 144, 144, 144,
-	1152.0, 1152.0,
-	# 160,
-]
 
 def print_features(features):
 	print features
-	for i in range(len(feature_normals)):
-		features[i] *= feature_normals[i]
-	print features
 	sum = 0
 	for i in range(len(pour1.feature_weights)):
-		features[i] *= pour1.feature_weights[i] / feature_normals[i]
+		features[i] *= pour1.feature_weights[i]
 		sum += features[i]
 	print features
 	print sum
@@ -341,9 +329,6 @@ if __name__ == '__main__':
 	obj1 = ''
 	obj2 = ''
 	pour1 = Player40(3)
-	pour1.player_map = {True: 'x', False: 'o'}
-	pour2 = Player40(3)
-	pour2.player_map = {True: 'o', False: 'x'}
 	option = sys.argv[1]
 	if option == '1':
 		obj1 = Random_Player()
@@ -356,11 +341,13 @@ if __name__ == '__main__':
 		obj1 = Manual_Player()
 		obj2 = Manual_Player()
 	elif option == '4':
+		pour1.player_map = {True: 'x', False: 'o'}
 		obj1 = Player40(int(sys.argv[2]))
 		obj2 = vidit()
 		# obj2 = Random_Player()
 		print obj2.__class__.__name__
 	elif option == '5':
+		pour1.player_map = {True: 'o', False: 'x'}
 		# obj1 = Random_Player()
 		obj1 = vidit()
 		obj2 = Player40(int(sys.argv[2]))
