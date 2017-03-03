@@ -342,7 +342,7 @@ if __name__ == '__main__':
 		obj2 = Manual_Player()
 	elif option == '4':
 		pour1.player_map = {True: 'x', False: 'o'}
-		obj1 = Player40(int(sys.argv[2]))
+		obj1 = Player40()
 		obj2 = vidit()
 		# obj2 = Random_Player()
 		print obj2.__class__.__name__
@@ -350,11 +350,11 @@ if __name__ == '__main__':
 		pour1.player_map = {True: 'o', False: 'x'}
 		# obj1 = Random_Player()
 		obj1 = vidit()
-		obj2 = Player40(int(sys.argv[2]))
+		obj2 = Player40()
 		print obj1.__class__.__name__
 	elif option == '6':
-		obj1 = Player40(int(sys.argv[2]))
-		obj2 = Player40(int(sys.argv[3]))
+		obj1 = Player40()
+		obj2 = Player40()
 	else:
 		print 'Invalid option'
 		sys.exit(1)

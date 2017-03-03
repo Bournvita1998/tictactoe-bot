@@ -3,13 +3,12 @@ import random
 
 class Player40:
 
-	def __init__(self, heurn = 3):
+	def __init__(self):
 		self.MAX = 1000000000
-		self.default_depth = 3
+		self.default_depth = 2
 		self.player_map = {}
-		self.heurn = heurn
-		self.maxTime = 0
-		self.timeLimit = 13
+		# self.maxTime = 0
+		self.timeLimit = 14
 		# [
 		# 	freemove,
 		# 	blocks_cc_won, blocks_cc_lost, blocks_edge_won, blocks_edge_lost,
@@ -23,17 +22,17 @@ class Player40:
 		# 	# cfreedom/160.0,
 		# ]
 		self.feature_weights = [
-			1000,
-			3000, -3000, 2000, -2000,
-			100, -100,
-			115, -115,
+			3000,
+			9000, -9000, 6000, -6000,
+			300, -300,
+			345, -345,
 
-			2, -2, 1, -1,
-			1, -1,
-			1.15, -1.15,
+			6, -6, 3, -3,
+			3, -3,
+			3.45, -3.45,
 		]
-		self.blwts = [0, 1, 10, 100, 500]
-		self.clwts = [0, 1, 10, 100, 500]
+		self.blwts = [0, 0, 30, 300, 1500]
+		self.clwts = [0, 0, 30, 300, 1500]
 
 	def move(self, board, old_move, flag):
 		self.startTime = time()
@@ -43,7 +42,7 @@ class Player40:
 		else:
 			self.player_map[True] = 'o'
 			self.player_map[False] = 'x'
-		depth = 2
+		depth = self.default_depth
 		ret = 0
 		self.stopTime = False
 		while time() - self.startTime < self.timeLimit:
@@ -51,7 +50,7 @@ class Player40:
 			if not self.stopTime:
 				ret = x
 				depth += 1
-		print 'Depth ' + str(depth)
+		# print 'Depth ' + str(depth)
 		self.stopTime = False
 		return ret
 
@@ -119,7 +118,6 @@ class Player40:
 
 
 	def heuristic(self, board, old_move, was_our_move):
-		t1 = time()
 		tstate = board.find_terminal_state()
 		if tstate[1] == 'WON':
 			if tstate[0] == self.player_map[True]:
@@ -127,51 +125,12 @@ class Player40:
 			else:
 				return -self.MAX
 
-		if self.heurn == 1: # heur1
-			heur1 = 0
-			for i in range(4):
-				for j in range(4):
-					if board.block_status[i][j] == self.player_map[True]:
-						heur1 += 1
-					elif board.block_status[i][j] == self.player_map[False]:
-						heur1 -= 1
-			t2 = time()
-			if t2 - t1 > self.maxTime:
-				self.maxTime = t2 - t1
-			return heur1
-		elif self.heurn == 2: # heur2
-			score = 0
-			for i in range(4):
-				for j in range(4):
-					temp = 0
-					if (i == 0 or i == 3) != (j == 0 or j == 3): # edge block
-						temp = 5
-					else: # corner or one of the centre squares
-						temp = 15
-					if board.block_status[i][j] == self.player_map[True]:
-						score += temp
-					elif board.block_status[i][j] == self.player_map[False]:
-						score -= temp
-					if board.block_status[i][j] == '-':
-						for bi in range(4):
-							for bj in range(4):
-								if (bi == 0 or bi == 3) == (bj == 0 or bj == 3): # centre or corner squares
-									if board.board_status[4*i + bi][4*j + bj] == self.player_map[True]:
-										score += 3
-									elif board.board_status[4*i + bi][4*j + bj] == self.player_map[False]:
-										score -= 3
-			t2 = time()
-			if t2 - t1 > self.maxTime:
-				self.maxTime = t2 - t1
-			return score
+		features = self.extract_features(board, old_move, was_our_move)
+		total = 0
+		for i in range(len(self.feature_weights)):
+			total += self.feature_weights[i] * features[i]
 
-		elif self.heurn == 3:
-			features = self.extract_features(board, old_move, was_our_move)
-			total = 0
-			for i in range(len(self.feature_weights)):
-				total += self.feature_weights[i] * features[i]
-
-			return total
+		return total
 
 
 	def extract_features(self, board, old_move, was_our_move):
