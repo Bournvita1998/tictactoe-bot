@@ -24,6 +24,8 @@ class Player40:
 			20, -20,
 			2, -2,
 		]
+		self.blwts = [0, 1, 10, 100, 500]
+		self.clwts = [0, 1, 10, 100, 500]
 
 	def move(self, board, old_move, flag):
 		self.startTime = time()
@@ -166,10 +168,10 @@ class Player40:
 
 	def extract_features(self, board, old_move, was_our_move):
 
-		# blocks_cc_won = blocks_cc_lost = 0.0
-		# blocks_edge_won = blocks_edge_lost = 0.0
-		# cells_cc_won = cells_cc_lost = 0.0
-		# cells_edge_won = cells_edge_lost = 0.0
+		blocks_cc_won = blocks_cc_lost = 0.0
+		blocks_edge_won = blocks_edge_lost = 0.0
+		cells_cc_won = cells_cc_lost = 0.0
+		cells_edge_won = cells_edge_lost = 0.0
 		bl_won = 0
 		bl_lost = 0
 		bdiag_won = bdiag_lost = 0
@@ -265,16 +267,16 @@ class Player40:
 					col_stat = 0
 
 				# Block statistics
-				# if (i == 0 or i == 3) != (j == 0 or j == 3): # edge block
-				# 	if board.block_status[i][j] == self.player_map[True]:
-				# 		blocks_edge_won += 1
-				# 	elif board.block_status[i][j] == self.player_map[False]:
-				# 		blocks_edge_lost += 1
-				# else: # corner or one of the centre squares
-				# 	if board.block_status[i][j] == self.player_map[True]:
-				# 		blocks_cc_won += 1
-				# 	elif board.block_status[i][j] == self.player_map[False]:
-				# 		blocks_cc_lost += 1
+				if (i == 0 or i == 3) != (j == 0 or j == 3): # edge block
+					if board.block_status[i][j] == self.player_map[True]:
+						blocks_edge_won += 1
+					elif board.block_status[i][j] == self.player_map[False]:
+						blocks_edge_lost += 1
+				else: # corner or one of the centre squares
+					if board.block_status[i][j] == self.player_map[True]:
+						blocks_cc_won += 1
+					elif board.block_status[i][j] == self.player_map[False]:
+						blocks_cc_lost += 1
 
 				# Cell statistics for blocks which have not been won or drawn
 				# if board.block_status[i][j] == '-':
@@ -288,7 +290,7 @@ class Player40:
 					crow_count = 0 # count of number of cells row_stat has in that row
 					ccol_count = 0
 
-					# ci = 4*i + bi
+					ci = 4*i + bi
 
 					# Diag1
 					if board.board_status[4*i+bi][4*j+bi] == self.player_map[True]:
@@ -323,7 +325,7 @@ class Player40:
 							cdiag2_count = 0
 
 					for bj in range(4):
-						# cj = 4*j + bj
+						cj = 4*j + bj
 						# Row statistics
 						if board.board_status[4*i+bi][4*j+bj] == self.player_map[True]:
 							if crow_stat == 2 or crow_stat == 1:
@@ -356,79 +358,79 @@ class Player40:
 								ccol_stat = 0
 								ccol_count = 0
 
-						# if (bi == 0 or bi == 3) == (bj != 0 or bj == 3): # centre or corner squares
-						# 	if board.board_status[ci][cj] == self.player_map[True]:
-						# 		cells_edge_won += 1
-						# 	elif board.board_status[ci][cj] == self.player_map[False]:
-						# 		cells_edge_lost += 1
-						# else:
-						# 	if board.board_status[ci][cj] == self.player_map[True]:
-						# 		cells_cc_won += 1
-						# 	elif board.board_status[ci][cj] == self.player_map[False]:
-						# 		cells_cc_lost += 1
+						if (bi == 0 or bi == 3) == (bj == 0 or bj == 3): # centre or corner squares
+							if board.board_status[ci][cj] == self.player_map[True]:
+								cells_edge_won += 1
+							elif board.board_status[ci][cj] == self.player_map[False]:
+								cells_edge_lost += 1
+						else:
+							if board.board_status[ci][cj] == self.player_map[True]:
+								cells_cc_won += 1
+							elif board.board_status[ci][cj] == self.player_map[False]:
+								cells_cc_lost += 1
 
 					if crow_stat == 1:
-						cl_won += crow_count * crow_count
+						cl_won += self.clwts[crow_count]
 						cfreedom += 1
 					elif crow_stat == -1:
-						cl_lost += crow_count * crow_count
+						cl_lost += self.clwts[crow_count]
 					elif crow_stat == 2:
 						cfreedom += 1
 
 					if ccol_stat == 1:
-						cl_won += ccol_count * ccol_count
+						cl_won += self.clwts[ccol_count]
 						cfreedom += 1
 					elif ccol_stat == -1:
-						cl_lost += ccol_count * ccol_count
+						cl_lost += self.clwts[ccol_count]
 					elif ccol_stat == 2:
 						cfreedom += 1
 
 				if cdiag1_stat == 1:
-					cdiag_won += cdiag1_count * cdiag1_count
+					cdiag_won += self.clwts[cdiag1_count]
 					cfreedom += 1
 				elif cdiag1_stat == -1:
-					cdiag_lost += cdiag1_count * cdiag1_count
+					cdiag_lost += self.clwts[cdiag1_count]
 				elif cdiag1_stat == 2:
 					cfreedom += 1
 
 				if cdiag2_stat == 1:
-					cdiag_won += cdiag2_count * cdiag2_count
+					cdiag_won += self.clwts[cdiag2_count]
 					cfreedom += 1
 				elif cdiag2_stat == -1:
-					cdiag_lost += cdiag2_count * cdiag2_count
+					cdiag_lost += self.clwts[cdiag2_count]
 				elif cdiag2_stat == 2:
 					cfreedom += 1
 
 
 			if row_stat == 1:
-				bl_won += row_count * row_count * row_count
+				bl_won += self.blwts[row_count]
 				freedom += 1
 			elif row_stat == -1:
-				bl_lost += row_count * row_count * row_count
+				bl_lost += self.blwts[row_count]
 			elif row_stat == 2:
 				freedom += 1
 
 			if col_stat == 1:
-				bl_won += col_count * col_count * col_count
+				bl_won += self.blwts[col_count]
 				freedom += 1
 			elif col_stat == -1:
-				bl_lost += col_count * col_count * col_count
+				bl_lost += self.blwts[col_count]
 			elif col_stat == 2:
 				freedom += 1
 
 		if diag1_stat == 1:
-			bdiag_won += diag1_count * diag1_count * diag1_count
+			bdiag_won += self.blwts[diag1_count]
 			freedom += 1
 		elif diag1_stat == -1:
-			bdiag_lost += diag1_count * diag1_count * diag1_count
+			bdiag_lost += self.blwts[diag1_count]
 		elif diag1_stat == 2:
 			freedom += 1
 
 		if diag2_stat == 1:
-			bdiag_won += diag2_count * diag2_count * diag2_count
+			bdiag_won += self.blwts[diag2_count]
 			freedom += 1
 		elif diag2_stat == -1:
-			bdiag_lost += diag2_count * diag2_count * diag2_count
+			bdiag_lost += self.blwts[diag2_count]
 		elif diag2_stat == 2:
 			freedom += 1
 
@@ -437,17 +439,17 @@ class Player40:
 
 
 		return [
-			# blocks_cc_won/9.0, blocks_cc_lost/9.0, blocks_edge_won/9.0, blocks_edge_lost/9.0,
+			blocks_cc_won/9.0, blocks_cc_lost/9.0, blocks_edge_won/9.0, blocks_edge_lost/9.0,
 
-			bl_won/72.0, bl_lost/72.0,
+			bl_won, bl_lost,
 			# freedom/10.0,
 			freemove,
 
-			# cells_cc_won/144.0, cells_cc_lost/144.0, cells_edge_won/144.0, cells_edge_lost/144.0,
-			cl_won/1152.0, cl_lost/1152.0,
+			cells_cc_won/144.0, cells_cc_lost/144.0, cells_edge_won/144.0, cells_edge_lost/144.0,
+			cl_won, cl_lost,
 
 			# cfreedom/160.0,
 
-			bdiag_won/54.0, bdiag_lost/54.0,
-			cdiag_won/288.0, cdiag_lost/288.0,
+			bdiag_won, bdiag_lost,
+			cdiag_won, cdiag_lost,
 		]
