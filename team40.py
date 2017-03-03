@@ -21,22 +21,29 @@ class Player40:
 		]
 
 	def move(self, board, old_move, flag):
+		self.startTime = time()
 		if flag == 'x':
 			self.player_map[True] = 'x'
 			self.player_map[False] = 'o'
 		else:
 			self.player_map[True] = 'o'
 			self.player_map[False] = 'x'
+		depth = 2
+		ret = 0
+		while time() - self.startTime < 14:
+			x = self.moveD(board, old_move, flag, depth)
+			if x != -1:
+				ret = x
+			depth += 1
+		return ret
+
+	def moveD(self, board, old_move, flag, depth):
 
 		moves = board.find_valid_move_cells(old_move)
-		maxindex = 0
 		maxval = -self.MAX
-		# temp_board = copy.deepcopy(board)
-		# temp_board.update(old_move, moves[i], self.player_map[True])
 		maxi = []
 		for i in range(len(moves)):
-			v = self.ab_minimax(board, moves[i], self.default_depth, -self.MAX, self.MAX, False)
-
+			v = self.ab_minimax(board, moves[i], depth, -self.MAX, self.MAX, False)
 			# print v
 			if v > maxval:
 				maxval = v
@@ -50,7 +57,8 @@ class Player40:
 
 
 	def ab_minimax(self, board, old_move, depth, alpha, beta, max_player):
-		if depth == 0 or board.find_terminal_state() != ('CONTINUE', '-'):
+
+		if depth == 0 or board.find_terminal_state() != ('CONTINUE', '-') or time() - self.startTime > 14:
 			# sys.stdout.write(str(old_move) + ' ')
 			return self.heuristic(board, old_move, not max_player)
 
