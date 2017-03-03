@@ -3,7 +3,7 @@ import random
 
 class Player40:
 
-	def __init__(self, heurn = 2):
+	def __init__(self, heurn = 3):
 		self.MAX = 1000000000
 		self.default_depth = 3
 		self.player_map = {}
@@ -163,10 +163,10 @@ class Player40:
 
 	def extract_features(self, board, old_move, was_our_move):
 
-		blocks_cc_won = blocks_cc_lost = 0.0
-		blocks_edge_won = blocks_edge_lost = 0.0
-		cells_cc_won = cells_cc_lost = 0.0
-		cells_edge_won = cells_edge_lost = 0.0
+		# blocks_cc_won = blocks_cc_lost = 0.0
+		# blocks_edge_won = blocks_edge_lost = 0.0
+		# cells_cc_won = cells_cc_lost = 0.0
+		# cells_edge_won = cells_edge_lost = 0.0
 		bl_won = 0
 		bl_lost = 0
 		freedom = 0
@@ -260,16 +260,16 @@ class Player40:
 					col_stat = 0
 
 				# Block statistics
-				if (i == 0 or i == 3) != (j == 0 or j == 3): # edge block
-					if board.block_status[i][j] == self.player_map[True]:
-						blocks_edge_won += 1
-					elif board.block_status[i][j] == self.player_map[False]:
-						blocks_edge_lost += 1
-				else: # corner or one of the centre squares
-					if board.block_status[i][j] == self.player_map[True]:
-						blocks_cc_won += 1
-					elif board.block_status[i][j] == self.player_map[False]:
-						blocks_cc_lost += 1
+				# if (i == 0 or i == 3) != (j == 0 or j == 3): # edge block
+				# 	if board.block_status[i][j] == self.player_map[True]:
+				# 		blocks_edge_won += 1
+				# 	elif board.block_status[i][j] == self.player_map[False]:
+				# 		blocks_edge_lost += 1
+				# else: # corner or one of the centre squares
+				# 	if board.block_status[i][j] == self.player_map[True]:
+				# 		blocks_cc_won += 1
+				# 	elif board.block_status[i][j] == self.player_map[False]:
+				# 		blocks_cc_lost += 1
 
 				# Cell statistics for blocks which have not been won or drawn
 				# if board.block_status[i][j] == '-':
@@ -283,7 +283,7 @@ class Player40:
 					crow_count = 0 # count of number of cells row_stat has in that row
 					ccol_count = 0
 
-					ci = 4*i + bi
+					# ci = 4*i + bi
 
 					# Diag1
 					if board.board_status[4*i+bi][4*j+bi] == self.player_map[True]:
@@ -318,7 +318,7 @@ class Player40:
 							cdiag2_count = 0
 
 					for bj in range(4):
-						cj = 4*j + bj
+						# cj = 4*j + bj
 						# Row statistics
 						if board.board_status[4*i+bi][4*j+bj] == self.player_map[True]:
 							if crow_stat == 2 or crow_stat == 1:
