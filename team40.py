@@ -8,9 +8,16 @@ class Player40:
 		self.player_map = {}
 		self.heurn = heurn
 		self.maxTime = 0
-		self.feature_weights = [100.0, -100.0, 70.0, -70.0,
-								1000.0, -1000.0, 500.0, 700.0,
-								10.0, -10.0, 7.0, -7.0]
+		self.feature_weights = [
+			0, 0, 0, 0,
+
+			100, -100,
+			50, 50,
+
+			0, 0, 0, 0,
+			10, -10,
+			5,
+		]
 
 	def move(self, board, old_move, flag):
 		if flag == 'x':
