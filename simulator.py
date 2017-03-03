@@ -5,21 +5,30 @@ import time
 import copy
 import traceback
 from team40 import Player40
+from vidit import vidit
 # from swag39 import Player39a
 
 feature_normals = [
-	9, 9, 9, 9,
-	72, 72,
-	18,1,
-	144, 144, 144, 144,
-	1152, 1152,
-	160,
+	# 9, 9, 9, 9,
+	72.0, 72.0,
+	# 18,
+	1.0,
+	# 144, 144, 144, 144,
+	1152.0, 1152.0,
+	# 160,
 ]
 
 def print_features(features):
+	print features
 	for i in range(len(feature_normals)):
 		features[i] *= feature_normals[i]
 	print features
+	sum = 0
+	for i in range(len(pour1.feature_weights)):
+		features[i] *= pour1.feature_weights[i] / feature_normals[i]
+		sum += features[i]
+	print features
+	print sum
 
 class TimedOutExc(Exception):
 	pass
@@ -189,7 +198,7 @@ def gameplay(obj1, obj2):				#game simulator
 	old_move = (-1,-1)
 	WINNER = ''
 	MESSAGE = ''
-	TIME = 11
+	TIME = 15
 	pts1 = 0
 	pts2 = 0
 
@@ -291,7 +300,7 @@ def gameplay(obj1, obj2):				#game simulator
 		print 'it was o'
 		game_board.print_board()
 		old_move = p2_move
-		print_features(pour2.extract_features(game_board, old_move, True))
+		print_features(pour1.extract_features(game_board, old_move, True))
 
 	game_board.print_board()
 
@@ -348,11 +357,14 @@ if __name__ == '__main__':
 		obj2 = Manual_Player()
 	elif option == '4':
 		obj1 = Player40(int(sys.argv[2]))
-		obj2 = Random_Player()
+		obj2 = vidit()
+		# obj2 = Random_Player()
+		print obj2.__class__.__name__
 	elif option == '5':
-		# obj1 = Player39a()
-		obj1 = Random_Player()
+		# obj1 = Random_Player()
+		obj1 = vidit()
 		obj2 = Player40(int(sys.argv[2]))
+		print obj1.__class__.__name__
 	elif option == '6':
 		obj1 = Player40(int(sys.argv[2]))
 		obj2 = Player40(int(sys.argv[3]))

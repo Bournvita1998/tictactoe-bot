@@ -9,16 +9,17 @@ class Player40:
 		self.player_map = {}
 		self.heurn = heurn
 		self.maxTime = 0
-		self.timeLimit = 10
+		self.timeLimit = 13
 		self.feature_weights = [
-			0, 0, 0, 0,
+			# 0, 0, 0, 0,
 
 			100, -100,
-			50, 50,
+			# 0,
+			15,
 
-			0, 0, 0, 0,
-			10, -10,
-			5,
+			# 0, 0, 0, 0,
+			100, -110,
+			# 0,
 		]
 
 	def move(self, board, old_move, flag):
@@ -36,7 +37,7 @@ class Player40:
 			x = self.moveD(board, old_move, flag, depth)
 			if not self.stopTime:
 				ret = x
-			depth += 1
+				depth += 1
 		print 'Depth ' + str(depth)
 		self.stopTime = False
 		return ret
@@ -186,14 +187,14 @@ class Player40:
 
 			# Diag1
 			if board.block_status[i][i] == self.player_map[True]:
-				if diag1_stat == 2:
+				if diag1_stat == 2 or diag1_stat == 1:
 					diag1_stat = 1
 					diag1_count += 1
 				else:
 					diag1_stat = 0
 					diag1_count = 0
 			elif board.block_status[i][i] == self.player_map[False]:
-				if diag1_stat == 2:
+				if diag1_stat == 2 or diag1_stat == -1:
 					diag1_stat = -1
 					diag1_count += 1
 				else:
@@ -204,14 +205,14 @@ class Player40:
 
 			# Diag2
 			if board.block_status[i][3-i] == self.player_map[True]:
-				if diag2_stat == 2:
+				if diag2_stat == 2 or diag2_stat == 1:
 					diag2_stat = 1
 					diag2_count += 1
 				else:
 					diag2_stat = 0
 					diag2_count = 0
 			elif board.block_status[i][3-i] == self.player_map[False]:
-				if diag2_stat == 2:
+				if diag2_stat == 2 or diag2_stat == -1:
 					diag2_stat = -1
 					diag2_count += 1
 				else:
@@ -224,14 +225,14 @@ class Player40:
 
 				# Row statistics
 				if board.block_status[i][j] == self.player_map[True]:
-					if row_stat == 2:
+					if row_stat == 2 or row_stat == 1:
 						row_stat = 1
 						row_count += 1
 					else:
 						row_stat = 0
 						row_count = 0
 				elif board.block_status[i][j] == self.player_map[False]:
-					if row_stat == 2:
+					if row_stat == 2 or row_stat == -1:
 						row_stat = -1
 						row_count += 1
 					else:
@@ -242,14 +243,14 @@ class Player40:
 
 				# Col statistics
 				if board.block_status[j][i] == self.player_map[True]:
-					if col_stat == 2:
+					if col_stat == 2 or col_stat == 1:
 						col_stat = 1
 						col_count += 1
 					else:
 						col_stat = 0
 						col_count = 0
 				elif board.block_status[j][i] == self.player_map[False]:
-					if col_stat == 2:
+					if col_stat == 2 or col_stat == -1:
 						col_stat = -1
 						col_count += 1
 					else:
@@ -271,158 +272,158 @@ class Player40:
 						blocks_cc_lost += 1
 
 				# Cell statistics for blocks which have not been won or drawn
-				if board.block_status[i][j] == '-':
-					cdiag1_stat = 2
-					cdiag1_count = 0
-					cdiag2_stat = 2
-					cdiag2_count = 0
-					for bi in range(4):
-						crow_stat = 2  # 1 - we are in adv in that row, 0 - drawn row, -1 - opp in adv
-						ccol_stat = 2  # 2 - unitialized
-						crow_count = 0 # count of number of cells row_stat has in that row
-						ccol_count = 0
+				# if board.block_status[i][j] == '-':
+				cdiag1_stat = 2
+				cdiag1_count = 0
+				cdiag2_stat = 2
+				cdiag2_count = 0
+				for bi in range(4):
+					crow_stat = 2  # 1 - we are in adv in that row, 0 - drawn row, -1 - opp in adv
+					ccol_stat = 2  # 2 - unitialized
+					crow_count = 0 # count of number of cells row_stat has in that row
+					ccol_count = 0
 
-						ci = 4*i + bi
+					ci = 4*i + bi
 
-						# Diag1
-						if board.board_status[ci][ci] == self.player_map[True]:
-							if cdiag1_stat == 2:
-								cdiag1_stat = 1
-								cdiag1_count += 1
+					# Diag1
+					if board.board_status[4*i+bi][4*j+bi] == self.player_map[True]:
+						if cdiag1_stat == 2 or cdiag1_stat == 1:
+							cdiag1_stat = 1
+							cdiag1_count += 1
+						else:
+							cdiag1_stat = 0
+							cdiag1_count = 0
+					elif board.board_status[4*i+bi][4*j+bi] == self.player_map[False]:
+						if cdiag1_stat == 2 or cdiag1_stat == -1:
+							cdiag1_stat = -1
+							cdiag1_count += 1
+						else:
+							cdiag1_stat = 0
+							cdiag1_count = 0
+
+					# Diag2
+					if board.board_status[4*i+bi][4*j+3-bi] == self.player_map[True]:
+						if cdiag2_stat == 2 or cdiag2_stat == 1:
+							cdiag2_stat = 1
+							cdiag2_count += 1
+						else:
+							cdiag2_stat = 0
+							cdiag2_count = 0
+					elif board.board_status[4*i+bi][4*j+3-bi] == self.player_map[False]:
+						if cdiag2_stat == 2 or cdiag2_stat == -1:
+							cdiag2_stat = -1
+							cdiag2_count += 1
+						else:
+							cdiag2_stat = 0
+							cdiag2_count = 0
+
+					for bj in range(4):
+						cj = 4*j + bj
+						# Row statistics
+						if board.board_status[4*i+bi][4*j+bj] == self.player_map[True]:
+							if crow_stat == 2 or crow_stat == 1:
+								crow_stat = 1
+								crow_count += 1
 							else:
-								cdiag1_stat = 0
-								cdiag1_count = 0
-						elif board.board_status[ci][ci] == self.player_map[False]:
-							if cdiag1_stat == 2:
-								cdiag1_stat = -1
-								cdiag1_count += 1
+								crow_stat = 0
+								crow_count = 0
+						elif board.board_status[4*i+bi][4*j+bj] == self.player_map[False]:
+							if crow_stat == 2 or crow_stat == -1:
+								crow_stat = -1
+								crow_count += 1
 							else:
-								cdiag1_stat = 0
-								cdiag1_count = 0
+								crow_stat = 0
+								crow_count = 0
 
-						# Diag2
-						if board.board_status[ci][3-ci] == self.player_map[True]:
-							if cdiag2_stat == 2:
-								cdiag2_stat = 1
-								cdiag2_count += 1
+						# Col statistics
+						if board.board_status[4*i+bj][4*j+bi] == self.player_map[True]:
+							if ccol_stat == 2 or ccol_count == 1:
+								ccol_stat = 1
+								ccol_count += 1
 							else:
-								cdiag2_stat = 0
-								cdiag2_count = 0
-						elif board.board_status[ci][3-ci] == self.player_map[False]:
-							if cdiag2_stat == 2:
-								cdiag2_stat = -1
-								cdiag2_count += 1
+								ccol_stat = 0
+								ccol_count = 0
+						elif board.board_status[4*i+bj][4*j+bi] == self.player_map[False]:
+							if ccol_stat == 2 or ccol_stat == -1:
+								ccol_stat = -1
+								ccol_count += 1
 							else:
-								cdiag2_stat = 0
-								cdiag2_count = 0
+								ccol_stat = 0
+								ccol_count = 0
 
-						for bj in range(4):
-							cj = 4*j + bj
-							# Row statistics
-							if board.board_status[ci][cj] == self.player_map[True]:
-								if crow_stat == 2:
-									crow_stat = 1
-									crow_count += 1
-								else:
-									crow_stat = 0
-									crow_count = 0
-							elif board.board_status[ci][cj] == self.player_map[False]:
-								if crow_stat == 2:
-									crow_stat = -1
-									crow_count += 1
-								else:
-									crow_stat = 0
-									crow_count = 0
+						# if (bi == 0 or bi == 3) == (bj != 0 or bj == 3): # centre or corner squares
+						# 	if board.board_status[ci][cj] == self.player_map[True]:
+						# 		cells_edge_won += 1
+						# 	elif board.board_status[ci][cj] == self.player_map[False]:
+						# 		cells_edge_lost += 1
+						# else:
+						# 	if board.board_status[ci][cj] == self.player_map[True]:
+						# 		cells_cc_won += 1
+						# 	elif board.board_status[ci][cj] == self.player_map[False]:
+						# 		cells_cc_lost += 1
 
-							# Col statistics
-							if board.board_status[cj][ci] == self.player_map[True]:
-								if ccol_stat == 2:
-									ccol_stat = 1
-									ccol_count += 1
-								else:
-									ccol_stat = 0
-									ccol_count = 0
-							elif board.board_status[cj][ci] == self.player_map[False]:
-								if ccol_stat == 2:
-									ccol_stat = -1
-									ccol_count += 1
-								else:
-									ccol_stat = 0
-									ccol_count = 0
-
-							if (bi == 0 or bi == 3) == (bj != 0 or bj == 3): # centre or corner squares
-								if board.board_status[ci][cj] == self.player_map[True]:
-									cells_edge_won += 1
-								elif board.board_status[ci][cj] == self.player_map[False]:
-									cells_edge_lost += 1
-							else:
-								if board.board_status[ci][cj] == self.player_map[True]:
-									cells_cc_won += 1
-								elif board.board_status[ci][cj] == self.player_map[False]:
-									cells_cc_lost += 1
-
-						if crow_stat == 1:
-							cl_won += crow_count * crow_count
-							cfreedom += 1
-						elif crow_stat == -1:
-							cl_lost += crow_count * crow_count
-						elif crow_stat == 2:
-							cfreedom += 1
-
-						if ccol_stat == 1:
-							cl_won += ccol_count * ccol_count
-							cfreedom += 1
-						elif ccol_stat == -1:
-							cl_lost += ccol_count * ccol_count
-						elif ccol_stat == 2:
-							cfreedom += 1
-
-					if cdiag1_stat == 1:
-						cl_won += cdiag1_count * cdiag1_count
+					if crow_stat == 1:
+						cl_won += crow_count * crow_count
 						cfreedom += 1
-					elif cdiag1_stat == -1:
-						cl_lost += cdiag1_count * cdiag1_count
-					elif cdiag1_stat == 2:
+					elif crow_stat == -1:
+						cl_lost += crow_count * crow_count
+					elif crow_stat == 2:
 						cfreedom += 1
 
-					if cdiag2_stat == 1:
-						cl_won += cdiag2_count * cdiag2_count
+					if ccol_stat == 1:
+						cl_won += ccol_count * ccol_count
 						cfreedom += 1
-					elif cdiag2_stat == -1:
-						cl_lost += cdiag2_count * cdiag2_count
-					elif cdiag2_stat == 2:
+					elif ccol_stat == -1:
+						cl_lost += ccol_count * ccol_count
+					elif ccol_stat == 2:
 						cfreedom += 1
+
+				if cdiag1_stat == 1:
+					cl_won += cdiag1_count * cdiag1_count
+					cfreedom += 1
+				elif cdiag1_stat == -1:
+					cl_lost += cdiag1_count * cdiag1_count
+				elif cdiag1_stat == 2:
+					cfreedom += 1
+
+				if cdiag2_stat == 1:
+					cl_won += cdiag2_count * cdiag2_count
+					cfreedom += 1
+				elif cdiag2_stat == -1:
+					cl_lost += cdiag2_count * cdiag2_count
+				elif cdiag2_stat == 2:
+					cfreedom += 1
 
 
 			if row_stat == 1:
-				bl_won += row_count * row_count
+				bl_won += row_count * row_count * row_count
 				freedom += 1
 			elif row_stat == -1:
-				bl_lost += row_count * row_count
+				bl_lost += row_count * row_count * row_count
 			elif row_stat == 2:
 				freedom += 1
 
 			if col_stat == 1:
-				bl_won += col_count * col_count
+				bl_won += col_count * col_count * col_count
 				freedom += 1
 			elif col_stat == -1:
-				bl_lost += col_count * col_count
+				bl_lost += col_count * col_count * col_count
 			elif col_stat == 2:
 				freedom += 1
 
 		if diag1_stat == 1:
-			bl_won += diag1_count * diag1_count
+			bl_won += diag1_count * diag1_count * diag1_count
 			freedom += 1
 		elif diag1_stat == -1:
-			bl_lost += diag1_count * diag1_count
+			bl_lost += diag1_count * diag1_count * diag1_count
 		elif diag1_stat == 2:
 			freedom += 1
 
 		if diag2_stat == 1:
-			bl_won += diag2_count * diag2_count
+			bl_won += diag2_count * diag2_count * diag2_count
 			freedom += 1
 		elif diag2_stat == -1:
-			bl_lost += diag2_count * diag2_count
+			bl_lost += diag2_count * diag2_count * diag2_count
 		elif diag2_stat == 2:
 			freedom += 1
 
@@ -431,12 +432,13 @@ class Player40:
 
 
 		return [
-			blocks_cc_won/9.0, blocks_cc_lost/9.0, blocks_edge_won/9.0, blocks_edge_lost/9.0,
+			# blocks_cc_won/9.0, blocks_cc_lost/9.0, blocks_edge_won/9.0, blocks_edge_lost/9.0,
 
 			bl_won/72.0, bl_lost/72.0,
-			freedom/10.0, freemove,
+			# freedom/10.0,
+			freemove,
 
-			cells_cc_won/144.0, cells_cc_lost/144.0, cells_edge_won/144.0, cells_edge_lost/144.0,
+			# cells_cc_won/144.0, cells_cc_lost/144.0, cells_edge_won/144.0, cells_edge_lost/144.0,
 			cl_won/1152.0, cl_lost/1152.0,
-			cfreedom/160.0,
+			# cfreedom/160.0,
 		]
