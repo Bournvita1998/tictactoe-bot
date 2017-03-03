@@ -1,4 +1,5 @@
 from time import time
+import random
 
 class Player40:
 
@@ -32,13 +33,20 @@ class Player40:
 		maxval = -self.MAX
 		# temp_board = copy.deepcopy(board)
 		# temp_board.update(old_move, moves[i], self.player_map[True])
+		maxi = []
 		for i in range(len(moves)):
 			v = self.ab_minimax(board, moves[i], self.default_depth, -self.MAX, self.MAX, False)
+
+			# print v
 			if v > maxval:
 				maxval = v
-				maxindex = i
+				# maxindex = i
+				maxi = [i]
+			elif v == maxval:
+				maxi.append(i)
 
-		return moves[maxindex]
+		# print maxi
+		return moves[random.choice(maxi)]
 
 
 	def ab_minimax(self, board, old_move, depth, alpha, beta, max_player):
@@ -60,7 +68,7 @@ class Player40:
 				alpha = max(alpha, v)
 				if beta <= alpha:
 					break
-				return v
+			return v
 
 		else:
 			v = self.MAX
