@@ -7,6 +7,20 @@ import traceback
 from team40 import Player40
 # from swag39 import Player39a
 
+feature_normals = [
+	9, 9, 9, 9,
+	72, 72,
+	18,1,
+	144, 144, 144, 144,
+	1152, 1152,
+	160,
+]
+
+def print_features(features):
+	for i in range(len(feature_normals)):
+		features[i] *= feature_normals[i]
+	print features
+
 class TimedOutExc(Exception):
 	pass
 
@@ -230,7 +244,7 @@ def gameplay(obj1, obj2):				#game simulator
 		print 'it was x'
 		old_move = p1_move
 		game_board.print_board()
-		print pour1.extract_features(game_board, old_move, True)
+		print_features(pour1.extract_features(game_board, old_move, True))
 
 		#do the same thing for player 2
 		temp_board_status = copy.deepcopy(game_board.board_status)
@@ -277,7 +291,7 @@ def gameplay(obj1, obj2):				#game simulator
 		print 'it was o'
 		game_board.print_board()
 		old_move = p2_move
-		print pour2.extract_features(game_board, old_move, True)
+		print_features(pour2.extract_features(game_board, old_move, True))
 
 	game_board.print_board()
 
