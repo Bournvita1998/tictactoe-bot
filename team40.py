@@ -20,6 +20,9 @@ class Player40:
 			# 0, 0, 0, 0,
 			100, -110,
 			# 0,
+
+			20, -20,
+			2, -2,
 		]
 
 	def move(self, board, old_move, flag):
@@ -169,9 +172,11 @@ class Player40:
 		# cells_edge_won = cells_edge_lost = 0.0
 		bl_won = 0
 		bl_lost = 0
+		bdiag_won = bdiag_lost = 0
 		freedom = 0
 		freemove = 0 # -1 if opp gets freemove, 0 or 1 if we get freemove
 		cl_won = cl_lost = 0
+		cdiag_won = cdiag_lost = 0
 		cfreedom = 0
 
 		diag1_stat = 2
@@ -379,18 +384,18 @@ class Player40:
 						cfreedom += 1
 
 				if cdiag1_stat == 1:
-					cl_won += cdiag1_count * cdiag1_count
+					cdiag_won += cdiag1_count * cdiag1_count
 					cfreedom += 1
 				elif cdiag1_stat == -1:
-					cl_lost += cdiag1_count * cdiag1_count
+					cdiag_lost += cdiag1_count * cdiag1_count
 				elif cdiag1_stat == 2:
 					cfreedom += 1
 
 				if cdiag2_stat == 1:
-					cl_won += cdiag2_count * cdiag2_count
+					cdiag_won += cdiag2_count * cdiag2_count
 					cfreedom += 1
 				elif cdiag2_stat == -1:
-					cl_lost += cdiag2_count * cdiag2_count
+					cdiag_lost += cdiag2_count * cdiag2_count
 				elif cdiag2_stat == 2:
 					cfreedom += 1
 
@@ -412,18 +417,18 @@ class Player40:
 				freedom += 1
 
 		if diag1_stat == 1:
-			bl_won += diag1_count * diag1_count * diag1_count
+			bdiag_won += diag1_count * diag1_count * diag1_count
 			freedom += 1
 		elif diag1_stat == -1:
-			bl_lost += diag1_count * diag1_count * diag1_count
+			bdiag_lost += diag1_count * diag1_count * diag1_count
 		elif diag1_stat == 2:
 			freedom += 1
 
 		if diag2_stat == 1:
-			bl_won += diag2_count * diag2_count * diag2_count
+			bdiag_won += diag2_count * diag2_count * diag2_count
 			freedom += 1
 		elif diag2_stat == -1:
-			bl_lost += diag2_count * diag2_count * diag2_count
+			bdiag_lost += diag2_count * diag2_count * diag2_count
 		elif diag2_stat == 2:
 			freedom += 1
 
@@ -440,5 +445,9 @@ class Player40:
 
 			# cells_cc_won/144.0, cells_cc_lost/144.0, cells_edge_won/144.0, cells_edge_lost/144.0,
 			cl_won/1152.0, cl_lost/1152.0,
+
 			# cfreedom/160.0,
+
+			bdiag_won/54.0, bdiag_lost/54.0,
+			cdiag_won/288.0, cdiag_lost/288.0,
 		]
