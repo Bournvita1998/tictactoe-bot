@@ -8,6 +8,9 @@ class Player40:
 		self.player_map = {}
 		self.heurn = heurn
 		self.maxTime = 0
+		self.feature_weights = [100.0, -100.0, 70.0, -70.0,
+								1000.0, -1000.0, 500.0, 700.0,
+								10.0, -10.0, 7.0, -7.0]
 
 	def move(self, board, old_move, flag):
 		if flag == 'x':
@@ -34,7 +37,7 @@ class Player40:
 	def ab_minimax(self, board, old_move, depth, alpha, beta, max_player):
 		if depth == 0 or board.find_terminal_state() != ('CONTINUE', '-'):
 			# sys.stdout.write(str(old_move) + ' ')
-			return self.heuristic(board)
+			return self.heuristic(board, old_move)
 
 		# print str(self.default_depth - depth) + '\t' + str(old_move)
 
@@ -67,7 +70,7 @@ class Player40:
 			return v
 
 
-	def heuristic(self, board):
+	def heuristic(self, board, old_move):
 		t1 = time()
 		tstate = board.find_terminal_state()
 		if tstate[1] == 'WON':
@@ -114,12 +117,27 @@ class Player40:
 				self.maxTime = t2 - t1
 			return score
 
+		elif self.heurn == 3:
+			features = self.extract_features(board, old_move)
 
-	def extract_features(self, board, old_move, was_our_move):
-		blocks_cc_won = blocks_cc_lost = 0
-		blocks_edge_won = blocks_edge_lost = 0
-		cells_cc_won = cells_cc_lost = 0
-		cells_edge_won = cells_edge_lost = 0
+			total = 0
+			for i in range(len(self.feature_weights)):
+				total += self.feature_weights[i] * features[i]
+
+			return total
+
+
+	def extract_features(self, board, old_move):
+		was_our_move = True
+		if board.board_status[old_move[0]][old_move[1]] == self.player_map[True]:
+			was_our_move = True
+		else:
+			was_our_move = False
+
+		blocks_cc_won = blocks_cc_lost = 0.0
+		blocks_edge_won = blocks_edge_lost = 0.0
+		cells_cc_won = cells_cc_lost = 0.0
+		cells_edge_won = cells_edge_lost = 0.0
 		bl_won = 0
 		bl_lost = 0
 		freedom = 0

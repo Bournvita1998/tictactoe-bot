@@ -341,4 +341,4 @@ if __name__ == '__main__':
 	x = gameplay(obj1, obj2)
 	print "Player 1 points:", x[0]
 	print "Player 2 points:", x[1]
-	print obj2.maxTime
+	# print obj2.maxTime
